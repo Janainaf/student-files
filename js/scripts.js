@@ -32,7 +32,7 @@ const displayOnPage = (user) => {
       "afterend",
       ` <div class="column">
               <div class="card">
-            <div class="card-img-container" id="hi">
+            <div class="card-img-container">
                 <img class="card-img" src="${item.picture.large}" alt="profile picture">
             </div>
             <div class="card-info-container">
@@ -48,12 +48,20 @@ const displayOnPage = (user) => {
 const modal = (user) => {
   displayOnPage(user);
 
-  function myFunction() {
-    alert("I am an alert box!");
+  function modal(event) {
+    console.log(user.name);
+    alert(event.target.textContent);
+    event.preventDefault();
   }
-  const ids = document.querySelectorAll("#hi");
-  document.querySelectorAll("#hi").forEach(function (ids) {
-    ids.addEventListener("click", myFunction);
+
+  const cardClasses = document.querySelectorAll(".card");
+  cardClasses.forEach(function (cardClasses) {
+    cardClasses.addEventListener("click", function (event) {
+      var targetElement = event.target;
+      console.log(targetElement);
+      modal(event);
+      event.preventDefault();
+    });
   });
 };
 
