@@ -4,7 +4,6 @@
 // image, first ans last nale; email; city or location
 
 var searchBar = document.querySelector(".search-container");
-console.log(searchBar);
 searchBar.insertAdjacentHTML(
   "afterend",
   `<form action="#" method="get">
@@ -13,36 +12,49 @@ searchBar.insertAdjacentHTML(
 </form>`
 );
 
-fetch("https://randomuser.me/api/?page=2&results=12&seed=abc")
-  .then(function (response) {
-    // The API call was successful!
-    return response.json();
-  })
-  .then(function (data) {
-    // This is the JSON from our response
-    for (var i = 0; i < 13; i++) {
-      var d1 = document.getElementById("gallery");
-      d1.insertAdjacentHTML(
-        "afterend",
-        ` <div class="column">
-        <div class="card">
-      <div class="card-img-container">
-          <img class="card-img" src="${data.results[i].picture.medium}" alt="profile picture">
-      </div>
-      <div class="card-info-container">
-      <h3 id="name" class="card-name cap">${data.results[i].name.first} ${data.results[i].name.last}</h3>
-      <p class="card-text"> ${data.results[i].email}</p>
-      <p class="card-text cap">${data.results[i].location.city}, ${data.results[i].location.state}</p>
-  </div>
-</div> `
-      );
-    }
-  })
-  .then(function (results) {
-    // This is the JSON from our response
-    console.log(results);
-  })
-  .catch(function (err) {
-    // There was an error
-    console.warn("Something went wrong.", err);
+const getData = async () => {
+  const response = await fetch(
+    "https://randomuser.me/api/?page=2&results=12&seed=abc"
+  );
+  const jsonData = await response.json();
+  console.log(jsonData);
+  const user = jsonData.results.map((user) => {
+    return user;
   });
+
+  modal(user);
+};
+
+const displayOnPage = (user) => {
+  var d1 = document.getElementById("gallery");
+  user.forEach((item) =>
+    d1.insertAdjacentHTML(
+      "afterend",
+      ` <div class="column">
+              <div class="card">
+            <div class="card-img-container" id="hi">
+                <img class="card-img" src="${item.picture.large}" alt="profile picture">
+            </div>
+            <div class="card-info-container">
+            <h3 id="name" class="card-name cap">${item.name.first} ${item.name.last}</h3>
+            <p class="card-text"> ${item.email}</p>
+            <p class="card-text cap">${item.city}, ${item.location.state}</p>
+        </div>
+        </div> `
+    )
+  );
+};
+
+const modal = (user) => {
+  displayOnPage(user);
+
+  function myFunction() {
+    alert("I am an alert box!");
+  }
+  const ids = document.querySelectorAll("#hi");
+  document.querySelectorAll("#hi").forEach(function (ids) {
+    ids.addEventListener("click", myFunction);
+  });
+};
+
+getData();
