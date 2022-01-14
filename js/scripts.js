@@ -13,9 +13,7 @@ searchBar.insertAdjacentHTML(
 );
 
 const getData = async () => {
-  const response = await fetch(
-    "https://randomuser.me/api/?page=2&results=12&seed=abc"
-  );
+  const response = await fetch("https://randomuser.me/api/?results=12");
   const jsonData = await response.json();
   console.log(jsonData);
   const user = jsonData.results.map((user) => {
@@ -26,40 +24,66 @@ const getData = async () => {
 };
 
 const displayOnPage = (user) => {
-  var d1 = document.getElementById("gallery");
-  user.forEach((item) =>
-    d1.insertAdjacentHTML(
+  var gallery = document.getElementById("gallery");
+  for (let i = 0; i < user.length; i++) {
+    gallery.insertAdjacentHTML(
       "afterend",
       ` <div class="column">
               <div class="card">
             <div class="card-img-container">
-                <img class="card-img" src="${item.picture.large}" alt="profile picture">
+                <img class="card-img" src="${user[i].picture.large}" alt="profile picture">
             </div>
             <div class="card-info-container">
-            <h3 id="name" class="card-name cap">${item.name.first} ${item.name.last}</h3>
-            <p class="card-text"> ${item.email}</p>
-            <p class="card-text cap">${item.city}, ${item.location.state}</p>
+            <h3 id="name" class="card-name cap">${user[i].name.first} ${user[i].name.last}</h3>
+            <p class="card-text"> ${user[i].email}</p>
+            <p class="card-text cap">${user[i].location.city}, ${user[i].location.state}</p>
         </div>
-        </div> `
-    )
-  );
+        </div> 
+        <div class="modal-container">
+                <div class="modal">
+                    <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+                    <div class="modal-info-container">
+                        <img class="modal-img" src="${user[i].picture.large}" alt="profile picture">
+                        <h3 id="name" class="modal-name cap">${user[i].name.first} ${user[i].name.last}</h3>
+                        <p class="modal-text">${user[i].email}</p>
+                        <p class="modal-text cap">${user[i].location.city}, ${user[i].location.state} </p>
+                        <hr>
+                        <p class="modal-text">${user[i].phone}</p>
+                        <p class="modal-text">${user[i].location.street.name} </p>
+                        <p class="modal-text">${user[i].dob.date}</p>
+                    </div>
+                </div>`
+    );
+  }
 };
 
 const modal = (user) => {
   displayOnPage(user);
+  const modals = document.querySelectorAll(".modal-container");
+  modals.forEach(function (modals) {
+    modals.style.display = "none";
+  });
 
-  function modal(event) {
-    console.log(user.name);
-    alert(event.target.textContent);
-    event.preventDefault();
+  function closeModal(event) {
+    const modalsButton = document.querySelectorAll(".modal-close-btn");
+    modalsButton.forEach(function (modalsButton) {
+      modalsButton.addEventListener("click", function (event) {
+        modals.forEach(function (modals) {
+          modals.style.display = "none";
+        });
+      });
+    });
   }
 
   const cardClasses = document.querySelectorAll(".card");
   cardClasses.forEach(function (cardClasses) {
     cardClasses.addEventListener("click", function (event) {
-      var targetElement = event.target;
-      console.log(targetElement);
-      modal(event);
+      var cardClassSibling = cardClasses.nextSibling;
+      var modalContainer = cardClassSibling.nextElementSibling;
+      console.log(modalContainer);
+      modalContainer.style.display = "block";
+
+      closeModal(event);
       event.preventDefault();
     });
   });
